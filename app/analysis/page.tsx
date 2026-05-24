@@ -62,20 +62,19 @@ export default function AnalysisPage() {
 
   useEffect(() => {
     const advice = sessionStorage.getItem("compass_advice");
-    const cached = sessionStorage.getItem("compass_result");
+    const image = sessionStorage.getItem("compass_image");
 
+    if (!advice && !image) {
+      router.push("/compass");
+      return;
+    }
+
+    const cached = sessionStorage.getItem("compass_result");
     if (cached) {
       setResult(JSON.parse(cached));
       setLoading(false);
       return;
     }
-
-    if (!advice) {
-      router.push("/compass");
-      return;
-    }
-
-    const image = sessionStorage.getItem("compass_image");
 
     fetch("/api/analyze", {
       method: "POST",
@@ -109,12 +108,12 @@ export default function AnalysisPage() {
             <button onClick={() => router.push("/compass")}>
               <ChevronLeft size={24} />
             </button>
-            <div className="font-display text-lg font-semibold">Compass Verdict</div>
+            <div className="font-display text-lg">Due North Verdict</div>
           </div>
           <div className="flex-1 flex flex-col items-center justify-center">
-            <div className="w-12 h-12 rounded-full border-4 border-stone-200 border-t-scotia-red animate-spin mb-4"></div>
+            <div className="w-12 h-12 rounded-full border-4 border-[#E8E8E8] border-t-[#EC111A] animate-spin mb-4"></div>
             <div className="font-display text-lg">Analyzing...</div>
-            <div className="text-xs text-stone-500 mt-2 text-center px-8">
+            <div className="text-xs text-[#6B6B6B] mt-2 text-center px-8">
               Cross-checking against Scotia research and your account profile
             </div>
           </div>
@@ -131,14 +130,15 @@ export default function AnalysisPage() {
             <button onClick={() => router.push("/compass")}>
               <ChevronLeft size={24} />
             </button>
-            <div className="font-display text-lg font-semibold">Error</div>
+            <div className="font-display text-lg">Error</div>
           </div>
           <div className="flex-1 flex flex-col items-center justify-center text-center px-6">
             <XCircle size={40} className="text-red-500 mb-3" />
-            <div className="text-sm text-stone-700 mb-4">{error || "Something went wrong."}</div>
+            <div className="text-sm text-[#231F20] mb-4">{error || "Something went wrong."}</div>
             <button
               onClick={() => router.push("/compass")}
-              className="bg-scotia-red text-white px-4 py-2 rounded-xl text-sm font-semibold"
+              className="text-white px-4 py-2 rounded-xl text-sm font-semibold"
+              style={{ backgroundColor: "#EC111A" }}
             >
               Try again
             </button>
@@ -158,7 +158,7 @@ export default function AnalysisPage() {
           <button onClick={() => router.push("/compass")}>
             <ChevronLeft size={24} />
           </button>
-          <div className="font-display text-lg font-semibold">Compass Verdict</div>
+          <div className="font-display text-lg">Due North Verdict</div>
         </div>
 
         <div className={`fade-up rounded-2xl p-4 mb-4 ${style.bg} ${style.border} border`}>
@@ -175,33 +175,33 @@ export default function AnalysisPage() {
         </div>
 
         <div className="fade-up mb-4" style={{ animationDelay: "0.15s", opacity: 0 }}>
-          <div className="text-xs uppercase tracking-widest text-stone-500 font-semibold mb-2">
+          <div className="text-xs uppercase tracking-widest text-[#6B6B6B] font-semibold mb-2">
             Personalized using your Scotia data
           </div>
-          <div className="bg-stone-50 rounded-2xl p-4 border border-stone-200">
+          <div className="bg-white rounded-2xl p-4 shadow-sm">
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-white rounded-xl p-3">
-                <div className="text-xs text-stone-500 mb-1">Your income</div>
-                <div className="text-sm font-bold">$58,000</div>
-                <div className="text-xs text-stone-400">tax bracket: 20.5%</div>
+              <div className="bg-[#F5F5F5] rounded-xl p-3">
+                <div className="text-xs text-[#6B6B6B] mb-1">Your income</div>
+                <div className="text-sm font-bold text-[#231F20]">$58,000</div>
+                <div className="text-xs text-[#6B6B6B]">tax bracket: 20.5%</div>
               </div>
-              <div className="bg-white rounded-xl p-3">
-                <div className="text-xs text-stone-500 mb-1">TFSA room</div>
+              <div className="bg-[#F5F5F5] rounded-xl p-3">
+                <div className="text-xs text-[#6B6B6B] mb-1">TFSA room</div>
                 <div className="text-sm font-bold text-green-600">$12,400</div>
-                <div className="text-xs text-stone-400">unused · earning 0%</div>
+                <div className="text-xs text-[#6B6B6B]">unused · earning 0%</div>
               </div>
-              <div className="bg-white rounded-xl p-3">
-                <div className="text-xs text-stone-500 mb-1">FHSA room</div>
+              <div className="bg-[#F5F5F5] rounded-xl p-3">
+                <div className="text-xs text-[#6B6B6B] mb-1">FHSA room</div>
                 <div className="text-sm font-bold text-green-600">$8,000</div>
-                <div className="text-xs text-stone-400">home buyer eligible</div>
+                <div className="text-xs text-[#6B6B6B]">home buyer eligible</div>
               </div>
-              <div className="bg-white rounded-xl p-3">
-                <div className="text-xs text-stone-500 mb-1">Chequing idle</div>
+              <div className="bg-[#F5F5F5] rounded-xl p-3">
+                <div className="text-xs text-[#6B6B6B] mb-1">Chequing idle</div>
                 <div className="text-sm font-bold text-amber-600">$3,847</div>
-                <div className="text-xs text-stone-400">could be working harder</div>
+                <div className="text-xs text-[#6B6B6B]">could be working harder</div>
               </div>
             </div>
-            <div className="mt-3 flex items-center gap-2 text-xs text-stone-500">
+            <div className="mt-3 flex items-center gap-2 text-xs text-[#6B6B6B]">
               <div className="w-2 h-2 rounded-full bg-green-500"></div>
               Live from your Scotia accounts
             </div>
@@ -209,30 +209,30 @@ export default function AnalysisPage() {
         </div>
 
         <div className="fade-up mb-4" style={{ animationDelay: "0.3s", opacity: 0 }}>
-          <div className="text-xs uppercase tracking-widest text-stone-500 font-semibold mb-2">
+          <div className="text-xs uppercase tracking-widest text-[#6B6B6B] font-semibold mb-2">
             Why this matters for you
           </div>
-          <div className="border border-stone-200 rounded-2xl p-4">
+          <div className="bg-white rounded-2xl p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
-              <Zap size={14} className="text-scotia-red" />
-              <span className="text-sm font-semibold">Your situation</span>
+              <Zap size={14} style={{ color: "#EC111A" }} />
+              <span className="text-sm font-semibold text-[#231F20]">Your situation</span>
             </div>
-            <p className="text-sm text-stone-700 leading-relaxed">{result.whyItMatters}</p>
+            <p className="text-sm text-[#231F20] leading-relaxed">{result.whyItMatters}</p>
           </div>
         </div>
 
         {result.recommendations && result.recommendations.length > 0 && (
           <div className="fade-up mb-4" style={{ animationDelay: "0.6s", opacity: 0 }}>
-            <div className="text-xs uppercase tracking-widest text-stone-500 font-semibold mb-2">
+            <div className="text-xs uppercase tracking-widest text-[#6B6B6B] font-semibold mb-2">
               Suggested for you
             </div>
             <div className="space-y-2">
               {result.recommendations.map((rec, i) => (
                 <div
                   key={i}
-                  className="border border-stone-200 rounded-2xl p-4 flex items-start gap-3"
+                  className="bg-white rounded-2xl p-4 flex items-start gap-3 shadow-sm"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-scotia-red flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#EC111A" }}>
                     {i === 0 ? (
                       <PieChart size={18} className="text-white" />
                     ) : (
@@ -240,54 +240,54 @@ export default function AnalysisPage() {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold mb-1">{rec.productName}</div>
-                    <div className="text-xs text-stone-600 leading-relaxed">{rec.reason}</div>
+                    <div className="text-sm font-semibold text-[#231F20] mb-1">{rec.productName}</div>
+                    <div className="text-xs text-[#6B6B6B] leading-relaxed">{rec.reason}</div>
                   </div>
-                  <ArrowRight size={16} className="text-stone-400 flex-shrink-0 mt-1" />
+                  <ArrowRight size={16} className="text-[#6B6B6B] flex-shrink-0 mt-1" />
                 </div>
               ))}
             </div>
           </div>
         )}
 
-       <div className="fade-up space-y-2" style={{ animationDelay: "0.9s", opacity: 0 }}>
+        <div className="fade-up space-y-2" style={{ animationDelay: "0.9s", opacity: 0 }}>
           <button
             onClick={() => router.push("/advisor")}
-            className="w-full rounded-2xl p-4 flex items-center gap-3 text-left"
-            style={{ background: "linear-gradient(135deg, #1a1a1a 0%, #2d1517 100%)" }}
+            className="w-full rounded-2xl p-4 flex items-center gap-3 text-left bg-[#231F20]"
           >
             <div className="relative">
-              <div className="w-10 h-10 rounded-full bg-stone-700 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-[#3a3a3a] flex items-center justify-center">
                 <span className="text-white text-sm font-semibold">AI</span>
               </div>
-              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-stone-900"></div>
+              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-[#231F20]"></div>
             </div>
             <div className="flex-1">
               <div className="text-white text-sm font-semibold">Chat with Due North AI</div>
-              <div className="text-stone-400 text-xs">Instant · Free · Always available</div>
+              <div className="text-[#6B6B6B] text-xs">Instant · Free · Always available</div>
             </div>
             <MessageCircle size={18} className="text-white" />
           </button>
 
           <button
             onClick={() => router.push("/queue")}
-            className="w-full rounded-2xl p-4 flex items-center gap-3 text-left bg-white border-2 border-scotia-red"
+            className="w-full rounded-2xl p-4 flex items-center gap-3 text-left bg-white shadow-sm"
+            style={{ border: "2px solid #EC111A" }}
           >
             <div className="relative">
-              <div className="w-10 h-10 rounded-full bg-scotia-red flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "#EC111A" }}>
                 <span className="text-white text-sm font-semibold">P</span>
               </div>
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-500 border-2 border-white"></div>
             </div>
             <div className="flex-1">
-              <div className="text-sm font-semibold text-scotia-red">Talk to a real human</div>
-              <div className="text-stone-500 text-xs">Priya is online · free for clients under 34</div>
+              <div className="text-sm font-semibold" style={{ color: "#EC111A" }}>Talk to a real human</div>
+              <div className="text-[#6B6B6B] text-xs">Priya is online · free for clients under 34</div>
             </div>
-            <ArrowRight size={18} className="text-scotia-red" />
+            <ArrowRight size={18} style={{ color: "#EC111A" }} />
           </button>
         </div>
 
-        <div className="mt-4 flex items-center gap-2 text-xs text-stone-500 justify-center">
+        <div className="mt-4 mb-4 flex items-center gap-2 text-xs text-[#6B6B6B] justify-center">
           <Shield size={10} />
           <span>Verified against Scotia research · CIRO-aligned</span>
         </div>
