@@ -1,17 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --scotia-red: #EC111A;
+  --scotia-dark: #231F20;
+  --scotia-gray-100: #F5F5F5;
+  --scotia-gray-200: #E8E8E8;
+  --scotia-gray-500: #6B6B6B;
+}
+
 body {
   font-family: 'Inter', -apple-system, sans-serif;
-  background: #f4f1ed;
+  background: #f0f0f0;
 }
 
 .font-display {
-  font-family: 'Fraunces', serif;
-  font-optical-sizing: auto;
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-weight: 700;
 }
 
 @keyframes pulse-ring {

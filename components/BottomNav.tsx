@@ -15,7 +15,7 @@ export default function BottomNav() {
   ];
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-stone-200 flex justify-around py-2 z-40">
+    <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-[#E8E8E8] flex justify-around py-2 z-40">
       {items.map((item) => {
         const Icon = item.icon;
         const active = pathname === item.path;
@@ -27,10 +27,14 @@ export default function BottomNav() {
           >
             <Icon
               size={20}
-              className={active ? "text-scotia-red" : "text-stone-400"}
+              color={active ? "#EC111A" : "#6B6B6B"}
             />
             <span
-              className={`text-[10px] ${active ? "text-scotia-red font-semibold" : "text-stone-400"}`}
+              className="text-[10px]"
+              style={{
+                color: active ? "#EC111A" : "#6B6B6B",
+                fontWeight: active ? 600 : 400
+              }}
             >
               {item.label}
             </span>

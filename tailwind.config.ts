@@ -10,11 +10,15 @@ const config: Config = {
       colors: {
         scotia: {
           red: "#EC111A",
-          dark: "#1a1a1a",
+          dark: "#231F20",
+          gray: {
+            100: "#F5F5F5",
+            200: "#E8E8E8",
+            500: "#6B6B6B",
+          },
         },
       },
       fontFamily: {
-        display: ["Fraunces", "serif"],
         sans: ["Inter", "system-ui", "sans-serif"],
       },
     },
