@@ -3,7 +3,7 @@
 import PhoneFrame from "@/components/PhoneFrame";
 import BottomNav from "@/components/BottomNav";
 import { useRouter } from "next/navigation";
-import { Sparkles, Compass, User, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { Sparkles, Compass, User, AlertTriangle, CheckCircle2, TrendingUp } from "lucide-react";
 import { mockUser } from "@/lib/mockUser";
 
 export default function HomePage() {
@@ -63,6 +63,19 @@ export default function HomePage() {
             <div className="font-display text-xl font-semibold">
               ${mockUser.accounts.tfsa.room.toLocaleString()}
             </div>
+          </div>
+        </div>
+        
+        <div
+          className="rounded-2xl p-4 mb-5 cursor-pointer flex items-center gap-3 bg-gradient-to-br from-orange-50 to-rose-50 border border-orange-200"
+          onClick={() => router.push("/trending")}
+        >
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-rose-500 flex items-center justify-center flex-shrink-0">
+            <TrendingUp size={18} className="text-white" />
+          </div>
+          <div className="flex-1">
+            <div className="text-sm font-semibold">Trending on FinTok</div>
+            <div className="text-xs text-stone-600">NVDA · VFV · BTC · 6 stocks trending now</div>
           </div>
         </div>
 

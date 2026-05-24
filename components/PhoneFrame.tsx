@@ -1,8 +1,14 @@
 "use client";
 
 import { ReactNode } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { Home } from "lucide-react";
 
 export default function PhoneFrame({ children }: { children: ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const showHomeButton = pathname !== "/";
+
   return (
     <div className="min-h-screen bg-stone-100 flex items-center justify-center p-4">
       <div className="relative w-[380px] h-[780px] bg-black rounded-[44px] p-2 shadow-2xl">
@@ -16,6 +22,14 @@ export default function PhoneFrame({ children }: { children: ReactNode }) {
             </span>
           </div>
           <div className="flex-1 overflow-hidden">{children}</div>
+          {showHomeButton && (
+            <button
+              onClick={() => router.push("/")}
+              className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-black shadow-lg flex items-center justify-center z-50"
+            >
+              <Home size={18} className="text-white" />
+            </button>
+          )}
         </div>
       </div>
     </div>

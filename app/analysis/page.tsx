@@ -174,6 +174,40 @@ export default function AnalysisPage() {
           </p>
         </div>
 
+        <div className="fade-up mb-4" style={{ animationDelay: "0.15s", opacity: 0 }}>
+          <div className="text-xs uppercase tracking-widest text-stone-500 font-semibold mb-2">
+            Personalized using your Scotia data
+          </div>
+          <div className="bg-stone-50 rounded-2xl p-4 border border-stone-200">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-white rounded-xl p-3">
+                <div className="text-xs text-stone-500 mb-1">Your income</div>
+                <div className="text-sm font-bold">$58,000</div>
+                <div className="text-xs text-stone-400">tax bracket: 20.5%</div>
+              </div>
+              <div className="bg-white rounded-xl p-3">
+                <div className="text-xs text-stone-500 mb-1">TFSA room</div>
+                <div className="text-sm font-bold text-green-600">$12,400</div>
+                <div className="text-xs text-stone-400">unused · earning 0%</div>
+              </div>
+              <div className="bg-white rounded-xl p-3">
+                <div className="text-xs text-stone-500 mb-1">FHSA room</div>
+                <div className="text-sm font-bold text-green-600">$8,000</div>
+                <div className="text-xs text-stone-400">home buyer eligible</div>
+              </div>
+              <div className="bg-white rounded-xl p-3">
+                <div className="text-xs text-stone-500 mb-1">Chequing idle</div>
+                <div className="text-sm font-bold text-amber-600">$3,847</div>
+                <div className="text-xs text-stone-400">could be working harder</div>
+              </div>
+            </div>
+            <div className="mt-3 flex items-center gap-2 text-xs text-stone-500">
+              <div className="w-2 h-2 rounded-full bg-green-500"></div>
+              Live from your Scotia accounts
+            </div>
+          </div>
+        </div>
+
         <div className="fade-up mb-4" style={{ animationDelay: "0.3s", opacity: 0 }}>
           <div className="text-xs uppercase tracking-widest text-stone-500 font-semibold mb-2">
             Why this matters for you
@@ -216,7 +250,7 @@ export default function AnalysisPage() {
           </div>
         )}
 
-        <div className="fade-up" style={{ animationDelay: "0.9s", opacity: 0 }}>
+       <div className="fade-up space-y-2" style={{ animationDelay: "0.9s", opacity: 0 }}>
           <button
             onClick={() => router.push("/advisor")}
             className="w-full rounded-2xl p-4 flex items-center gap-3 text-left"
@@ -229,10 +263,27 @@ export default function AnalysisPage() {
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-stone-900"></div>
             </div>
             <div className="flex-1">
-              <div className="text-white text-sm font-semibold">Chat with Compass AI</div>
-              <div className="text-stone-400 text-xs">Or escalate to Priya, a real advisor</div>
+              <div className="text-white text-sm font-semibold">Chat with Due North AI</div>
+              <div className="text-stone-400 text-xs">Instant · Free · Always available</div>
             </div>
             <MessageCircle size={18} className="text-white" />
+          </button>
+
+          <button
+            onClick={() => router.push("/queue")}
+            className="w-full rounded-2xl p-4 flex items-center gap-3 text-left bg-white border-2 border-scotia-red"
+          >
+            <div className="relative">
+              <div className="w-10 h-10 rounded-full bg-scotia-red flex items-center justify-center">
+                <span className="text-white text-sm font-semibold">P</span>
+              </div>
+              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-500 border-2 border-white"></div>
+            </div>
+            <div className="flex-1">
+              <div className="text-sm font-semibold text-scotia-red">Talk to a real human</div>
+              <div className="text-stone-500 text-xs">Priya is online · free for clients under 34</div>
+            </div>
+            <ArrowRight size={18} className="text-scotia-red" />
           </button>
         </div>
 

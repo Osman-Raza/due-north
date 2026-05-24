@@ -1,11 +1,13 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { userContextString } from "@/lib/mockUser";
 import { productCatalogString } from "@/lib/scotiaProducts";
 
 export const runtime = "nodejs";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+const client = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
 
 const SYSTEM_PROMPT = `You are Scotia Due North, an AI feature inside the Scotiabank mobile app that helps young Canadians (18-34) fact-check financial advice they encounter on TikTok, Reddit, Instagram, group chats, and other social media.
 
@@ -32,7 +34,7 @@ Your job is to take a piece of financial advice (provided as text and/or a scree
 }
 
 RULES:
-- If given an image, read the financial advice shown in the image (TikTok, Reddit post, text screenshot, etc.) and fact-check that content.
+- If given an image, read the financial advice shown in the image and fact-check that content.
 - Maximum 2 recommendations.
 - Be direct and honest. If advice is bad, say so. If it's actually solid, say so.
 - Never give personalized investment advice yourself — only fact-check the content and surface relevant Scotia products. The licensed human advisor will give real advice.
@@ -50,26 +52,17 @@ export async function POST(request: Request) {
       );
     }
 
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
-      systemInstruction: SYSTEM_PROMPT,
-      generationConfig: {
-        responseMimeType: "application/json",
-        maxOutputTokens: 1024,
-      },
-    });
-
-    const parts: any[] = [];
+    const userContent: any[] = [];
 
     if (image && typeof image === "string" && image.startsWith("data:image/")) {
       const match = image.match(/^data:(image\/\w+);base64,(.+)$/);
       if (match) {
-        const mimeType = match[1];
-        const base64Data = match[2];
-        parts.push({
-          inlineData: {
-            mimeType,
-            data: base64Data,
+        userContent.push({
+          type: "image",
+          source: {
+            type: "base64",
+            media_type: match[1],
+            data: match[2],
           },
         });
       }
@@ -79,10 +72,17 @@ export async function POST(request: Request) {
       ? `The user uploaded this screenshot showing financial advice from social media. Read what's in the image carefully and fact-check the advice. ${advice ? `Additional context they typed: "${advice}"` : ""}`
       : `Here is the financial advice I just saw. Please fact-check it for me:\n\n"${advice}"`;
 
-    parts.push({ text: textPrompt });
+    userContent.push({ type: "text", text: textPrompt });
 
-    const result = await model.generateContent(parts);
-    const rawText = result.response.text();
+    const message = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 1024,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: "user", content: userContent }],
+    });
+
+    const textBlock = message.content.find((b) => b.type === "text");
+    const rawText = textBlock && textBlock.type === "text" ? textBlock.text : "";
     const cleaned = rawText.replace(/```json|```/g, "").trim();
     const parsed = JSON.parse(cleaned);
 
