@@ -1,15 +1,13 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 import { userContextString } from "@/lib/mockUser";
 import { productCatalogString } from "@/lib/scotiaProducts";
 
 export const runtime = "nodejs";
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-const SYSTEM_PROMPT = `You are the Scotia Compass AI Advisor — a friendly, plain-English AI assistant inside the Scotiabank mobile app. You help young Canadians (18-34) understand investing and make decisions.
+const SYSTEM_PROMPT = `You are the Scotia Due North AI Advisor — a friendly, plain-English AI assistant inside the Scotiabank mobile app. You help young Canadians (18-34) understand investing and make decisions.
 
 USER CONTEXT:
 ${userContextString}
@@ -46,18 +44,25 @@ export async function POST(request: Request) {
       );
     }
 
-    const response = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 512,
-      system: SYSTEM_PROMPT,
-      messages: messages.map((m: any) => ({
-        role: m.role,
-        content: m.content,
-      })),
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.0-flash",
+      systemInstruction: SYSTEM_PROMPT,
+      generationConfig: {
+        maxOutputTokens: 512,
+      },
     });
 
-    const textBlock = response.content.find((b) => b.type === "text");
-    const reply = textBlock && textBlock.type === "text" ? textBlock.text : "";
+    // Gemini uses "model" for assistant role; convert messages
+    const history = messages.slice(0, -1).map((m: any) => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.content }],
+    }));
+
+    const lastMessage = messages[messages.length - 1];
+
+    const chat = model.startChat({ history });
+    const result = await chat.sendMessage(lastMessage.content);
+    const reply = result.response.text();
 
     return NextResponse.json({ reply });
   } catch (err: any) {

@@ -75,10 +75,12 @@ export default function AnalysisPage() {
       return;
     }
 
+    const image = sessionStorage.getItem("compass_image");
+
     fetch("/api/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ advice }),
+      body: JSON.stringify({ advice, image }),
     })
       .then(async (r) => {
         if (!r.ok) {

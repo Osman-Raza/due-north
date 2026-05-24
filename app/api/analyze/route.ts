@@ -1,15 +1,13 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 import { userContextString } from "@/lib/mockUser";
 import { productCatalogString } from "@/lib/scotiaProducts";
 
 export const runtime = "nodejs";
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-const SYSTEM_PROMPT = `You are Scotia Compass, an AI feature inside the Scotiabank mobile app that helps young Canadians (18-34) fact-check financial advice they encounter on TikTok, Reddit, Instagram, group chats, and other social media.
+const SYSTEM_PROMPT = `You are Scotia Due North, an AI feature inside the Scotiabank mobile app that helps young Canadians (18-34) fact-check financial advice they encounter on TikTok, Reddit, Instagram, group chats, and other social media.
 
 USER CONTEXT (always use this in your response):
 ${userContextString}
@@ -17,7 +15,7 @@ ${userContextString}
 AVAILABLE SCOTIA PRODUCTS (recommend only from this list):
 ${productCatalogString}
 
-Your job is to take a piece of financial advice the user pasted in, and respond with a STRICT JSON object in this exact shape:
+Your job is to take a piece of financial advice (provided as text and/or a screenshot image) and respond with a STRICT JSON object in this exact shape:
 
 {
   "verdict": "legit" | "mostly_legit" | "misleading" | "false",
@@ -34,38 +32,57 @@ Your job is to take a piece of financial advice the user pasted in, and respond 
 }
 
 RULES:
+- If given an image, read the financial advice shown in the image (TikTok, Reddit post, text screenshot, etc.) and fact-check that content.
 - Maximum 2 recommendations.
 - Be direct and honest. If advice is bad, say so. If it's actually solid, say so.
-- Never give personalized investment advice yourself — only fact-check the pasted content and surface relevant Scotia products. The licensed human advisor will give real advice.
+- Never give personalized investment advice yourself — only fact-check the content and surface relevant Scotia products. The licensed human advisor will give real advice.
 - Use Canadian context only (TFSA, RRSP, FHSA, CDIC, CIRO — not 401(k), IRA, FDIC).
 - Output ONLY the JSON object. No markdown, no code fences, no preamble.`;
 
 export async function POST(request: Request) {
   try {
-    const { advice } = await request.json();
+    const { advice, image } = await request.json();
 
-    if (!advice || typeof advice !== "string") {
+    if (!advice && !image) {
       return NextResponse.json(
-        { error: "Missing 'advice' field" },
+        { error: "Provide 'advice' text or 'image' data" },
         { status: 400 }
       );
     }
 
-    const message = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1024,
-      system: SYSTEM_PROMPT,
-      messages: [
-        {
-          role: "user",
-          content: `Here is the financial advice I just saw. Please fact-check it for me:\n\n"${advice}"`,
-        },
-      ],
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.0-flash",
+      systemInstruction: SYSTEM_PROMPT,
+      generationConfig: {
+        responseMimeType: "application/json",
+        maxOutputTokens: 1024,
+      },
     });
 
-    const textBlock = message.content.find((b) => b.type === "text");
-    const rawText = textBlock && textBlock.type === "text" ? textBlock.text : "";
+    const parts: any[] = [];
 
+    if (image && typeof image === "string" && image.startsWith("data:image/")) {
+      const match = image.match(/^data:(image\/\w+);base64,(.+)$/);
+      if (match) {
+        const mimeType = match[1];
+        const base64Data = match[2];
+        parts.push({
+          inlineData: {
+            mimeType,
+            data: base64Data,
+          },
+        });
+      }
+    }
+
+    const textPrompt = image
+      ? `The user uploaded this screenshot showing financial advice from social media. Read what's in the image carefully and fact-check the advice. ${advice ? `Additional context they typed: "${advice}"` : ""}`
+      : `Here is the financial advice I just saw. Please fact-check it for me:\n\n"${advice}"`;
+
+    parts.push({ text: textPrompt });
+
+    const result = await model.generateContent(parts);
+    const rawText = result.response.text();
     const cleaned = rawText.replace(/```json|```/g, "").trim();
     const parsed = JSON.parse(cleaned);
 

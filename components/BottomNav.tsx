@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Compass, PieChart, Users } from "lucide-react";
+import { Home, Compass, MessageCircle, User } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 
 export default function BottomNav() {
@@ -9,9 +9,9 @@ export default function BottomNav() {
 
   const items = [
     { id: "home", label: "Home", icon: Home, path: "/" },
-    { id: "compass", label: "Compass", icon: Compass, path: "/compass" },
-    { id: "cohort", label: "Cohort", icon: Users, path: "/cohort" },
-    { id: "invest", label: "Invest", icon: PieChart, path: "/sprint" },
+    { id: "compass", label: "Due North", icon: Compass, path: "/compass" },
+    { id: "advisor", label: "Advisor", icon: MessageCircle, path: "/advisor" },
+    { id: "profile", label: "Profile", icon: User, path: "/" },
   ];
 
   return (

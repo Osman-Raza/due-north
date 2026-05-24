@@ -3,7 +3,7 @@
 import PhoneFrame from "@/components/PhoneFrame";
 import BottomNav from "@/components/BottomNav";
 import { useRouter } from "next/navigation";
-import { Sparkles, Compass, User, AlertTriangle, CheckCircle2, Users } from "lucide-react";
+import { Sparkles, Compass, User, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { mockUser } from "@/lib/mockUser";
 
 export default function HomePage() {
@@ -35,7 +35,7 @@ export default function HomePage() {
             <div className="flex items-center gap-2 mb-3">
               <Compass size={16} className="text-red-400" />
               <span className="text-xs uppercase tracking-widest text-red-400 font-semibold">
-                Scotia Compass
+                Scotia Due North
               </span>
             </div>
             <h2 className="font-display text-white text-xl leading-tight mb-3">
@@ -63,19 +63,6 @@ export default function HomePage() {
             <div className="font-display text-xl font-semibold">
               ${mockUser.accounts.tfsa.room.toLocaleString()}
             </div>
-          </div>
-        </div>
-
-        <div
-          className="rounded-2xl p-4 mb-5 cursor-pointer flex items-center gap-3 bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200"
-          onClick={() => router.push("/cohort")}
-        >
-          <div className="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center flex-shrink-0">
-            <Users size={18} className="text-white" />
-          </div>
-          <div className="flex-1">
-            <div className="text-sm font-semibold">Your First Investor Cohort</div>
-            <div className="text-xs text-stone-600">8 people · Priya is your mentor · 3 new messages</div>
           </div>
         </div>
 
