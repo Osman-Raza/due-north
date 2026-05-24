@@ -1,4 +1,4 @@
-# Scotia Compass 🧭
+# Due-North 🧭
 
 **Verify any financial advice. Built for first-time investors.**
 
