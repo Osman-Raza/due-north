@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Scotia Compass",
+  title: "Due-North",
   description: "Verify any financial advice. Built for first-time investors.",
 };
 
